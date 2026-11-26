@@ -12,10 +12,10 @@ public class Floater : MonoBehaviour
     public GameObject waterSurface;
     // public GameObject ball;
     // public Rigidbody ballRigidBody;
-    private float waterHeight = 0f; // 水面高度
+    private float waterHeight = 0f; // water level
     void Start()
     {
-        // 如果未手动指定Rigidbody，自动获取
+        // grab the Rigidbody automatically when it is not assigned
         if (rigidBody == null)
         {
             rigidBody = GetComponent<Rigidbody>();
@@ -23,7 +23,7 @@ public class Floater : MonoBehaviour
 
         if (rigidBody == null)
         {
-            Debug.LogError("Need Rigidbody Component！");
+            Debug.LogError("Need a Rigidbody component.");
         }
         
     }
@@ -31,33 +31,33 @@ public class Floater : MonoBehaviour
     void FixedUpdate()
     {
         waterHeight = waterSurface.transform.position.y;
-        // 检查物体是否在水面以下
+        // is the object below the water surface?
         if (transform.position.y < waterHeight)
         {
-            // 计算浸没深度比例 (0到1之间)
+            // submersion ratio between 0 and 1
             float submersionRatio = Mathf.Clamp01((waterHeight - transform.position.y) / depthBeforeSubmerged);
 
-            // 计算浮力大小
+            // buoyancy force
             float buoyancyForce = Mathf.Abs(Physics.gravity.y) * displacementAmount * submersionRatio;
 
-            // 施加浮力
+            // apply the buoyancy
             rigidBody.AddForce(new Vector3(0f, buoyancyForce, 0f), ForceMode.Force);
 
-            // 可选：添加阻尼力来模拟水的阻力
+            // optional damping to mimic water drag
             rigidBody.AddForce(-rigidBody.velocity * displacementAmount * 0.1f, ForceMode.Force);
         }
         // if (ball.transform.position.y < waterHeight)
         // {
-        //     // 计算浸没深度比例 (0到1之间)
+        //     // submersion ratio between 0 and 1
         //     float submersionRatio = Mathf.Clamp01((waterHeight - ball.transform.position.y) / depthBeforeSubmerged);
 
-        //     // 计算浮力大小
+        //     // buoyancy force
         //     float buoyancyForce = Mathf.Abs(Physics.gravity.y) * displacementAmount * submersionRatio;
 
-        //     // 施加浮力
+        //     // apply the buoyancy
         //     ballRigidBody.AddForce(new Vector3(0f, buoyancyForce, 0f), ForceMode.Force);
 
-        //     // 可选：添加阻尼力来模拟水的阻力
+        //     // optional damping to mimic water drag
         //     ballRigidBody.AddForce(-rigidBody.velocity * displacementAmount * 0.1f, ForceMode.Force);
         // }
     }
