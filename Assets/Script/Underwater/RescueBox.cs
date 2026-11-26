@@ -19,11 +19,7 @@ namespace UnderwaterOptimization
         {
             flow = FindObjectOfType<UnderwaterFlow>();
 
-            DebugPlayerMotor motor = FindObjectOfType<DebugPlayerMotor>();
-            if (motor != null)
-                playerRoot = motor.transform;
-            else if (Camera.main != null)
-                playerRoot = Camera.main.transform;
+            playerRoot = UnderwaterInput.PlayerRoot;
 
             if (panel != null)
                 panel.gameObject.SetActive(false);

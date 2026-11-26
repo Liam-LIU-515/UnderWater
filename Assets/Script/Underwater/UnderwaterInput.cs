@@ -30,7 +30,7 @@ namespace UnderwaterOptimization
 
         private static Camera cachedCamera;
 
-        private static Camera PlayerCamera
+        public static Camera PlayerCamera
         {
             get
             {
@@ -63,6 +63,19 @@ namespace UnderwaterOptimization
                 }
 
                 return null;
+            }
+        }
+
+        public static Transform PlayerRoot
+        {
+            get
+            {
+                DebugPlayerMotor motor = Object.FindObjectOfType<DebugPlayerMotor>();
+                if (motor != null)
+                    return motor.transform;
+
+                Camera cam = PlayerCamera;
+                return cam != null ? cam.transform : null;
             }
         }
 

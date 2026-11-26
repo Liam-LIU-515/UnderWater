@@ -40,21 +40,8 @@ namespace UnderwaterOptimization
             flow = FindObjectOfType<UnderwaterFlow>();
             body = GetComponent<Rigidbody>();
 
-            motor = FindObjectOfType<DebugPlayerMotor>();
-            if (motor != null)
-            {
-                playerRoot = motor.transform;
-                playerCamera = motor.cameraTransform != null ? motor.cameraTransform.GetComponent<Camera>() : null;
-                controller = motor.GetComponent<UnityEngine.CharacterController>();
-            }
-            else if (Camera.main != null)
-            {
-                playerRoot = Camera.main.transform;
-                playerCamera = Camera.main;
-            }
-
-            if (playerCamera == null)
-                playerCamera = Camera.main;
+            playerRoot = UnderwaterInput.PlayerRoot;
+            playerCamera = UnderwaterInput.PlayerCamera;
 
             BuildLine();
             BuildLabel();

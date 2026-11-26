@@ -22,17 +22,8 @@ namespace UnderwaterOptimization
             flow = FindObjectOfType<UnderwaterFlow>();
             quest = FindObjectOfType<FlashlightQuest>();
 
-            DebugPlayerMotor motor = FindObjectOfType<DebugPlayerMotor>();
-            if (motor != null)
-            {
-                playerRoot = motor.transform;
-                playerCamera = motor.cameraTransform != null ? motor.cameraTransform.GetComponent<Camera>() : null;
-            }
-            else if (Camera.main != null)
-            {
-                playerRoot = Camera.main.transform;
-                playerCamera = Camera.main;
-            }
+            playerRoot = UnderwaterInput.PlayerRoot;
+            playerCamera = UnderwaterInput.PlayerCamera;
 
             BuildLabel();
         }
