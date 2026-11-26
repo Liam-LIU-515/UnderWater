@@ -9,14 +9,14 @@ namespace UnderwaterOptimization
 {
     public static class UnderwaterColliders
     {
-        private const float MeshColliderThreshold = 12f; // 任一边超过这个尺寸就用 MeshCollider
+        private const float MeshColliderThreshold = 12f; // Use a MeshCollider when a side exceeds this size
 
-        [MenuItem("Tools/Underwater/6. Add Colliders (舱内道具)", false, 6)]
+        [MenuItem("Tools/Underwater/6. Add Colliders (props)", false, 6)]
         public static void AddCollidersMenu()
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -32,7 +32,7 @@ namespace UnderwaterOptimization
             int boxes = 0;
             int meshes = 0;
             int skipped = 0;
-            StringBuilder sb = new StringBuilder("[Underwater] 补碰撞体：");
+            StringBuilder sb = new StringBuilder("[Underwater] Colliders added: ");
 
             foreach (MeshRenderer r in Object.FindObjectsOfType<MeshRenderer>())
             {
@@ -79,9 +79,9 @@ namespace UnderwaterOptimization
                 }
             }
 
-            sb.Append("BoxCollider ").Append(boxes).Append(" 个，MeshCollider ").Append(meshes)
-              .Append(" 个，跳过 ").Append(skipped).Append(" 个。");
-            sb.Append("（大件用 MeshCollider，小件用 BoxCollider；已有碰撞的不会重复加）");
+            sb.Append("BoxCollider ").Append(boxes).Append(" boxes, MeshCollider ").Append(meshes)
+              .Append(" meshes, skipped ").Append(skipped).Append(".");
+            sb.Append("(large parts use MeshCollider, small parts BoxCollider; existing colliders are skipped)");
             return sb.ToString();
         }
     }

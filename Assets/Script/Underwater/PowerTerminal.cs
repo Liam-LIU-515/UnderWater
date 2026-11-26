@@ -16,9 +16,9 @@ namespace UnderwaterOptimization
         {
             switch (index)
             {
-                case 0: return new Color(0.90f, 0.10f, 0.07f);   // 红
-                case 1: return new Color(0.10f, 0.78f, 0.26f);   // 绿
-                default: return new Color(0.08f, 0.32f, 0.90f);  // 蓝
+                case 0: return new Color(0.90f, 0.10f, 0.07f);   // red
+                case 1: return new Color(0.10f, 0.78f, 0.26f);   // green
+                default: return new Color(0.08f, 0.32f, 0.90f);  // blue
             }
         }
 
@@ -26,9 +26,9 @@ namespace UnderwaterOptimization
         {
             switch (index)
             {
-                case 0: return "红色";
-                case 1: return "绿色";
-                default: return "蓝色";
+                case 0: return "red";
+                case 1: return "green";
+                default: return "blue";
             }
         }
 

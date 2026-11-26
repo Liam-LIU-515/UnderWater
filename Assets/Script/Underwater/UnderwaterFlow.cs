@@ -7,22 +7,22 @@ namespace UnderwaterOptimization
 {
     public class UnderwaterFlow : MonoBehaviour
     {
-        [Header("引用")]
+        [Header("References")]
         public Transform water;
         public Light holeLight;
         public Collider exitZone;
         public Camera playerCamera;
 
-        [Header("水位")]
+        [Header("Water")]
         public float floorY = 0.62f;
         public float waterStartY = 0.35f;
         public float waterEndY = 1.85f;
         public float floodDuration = 90f;
 
-        [Header("提示文案")]
-        public string hintStart = "船体破损了，四周一片漆黑 —— 先找到手电筒和电池";
-        public string hintFlood = "电话打出去了！水正在漫上来 —— 用绳索枪射向舱顶的橙色锚点";
-        public string hintWin = "你被绳索拽上舱顶，从破口钻了出去";
+        [Header("Hints")]
+        public string hintStart = "The hull is breached and everything is pitch black. Find the torch and the battery first.";
+        public string hintFlood = "The call went through! Water is rising. Fire the rope gun at the orange anchor above.";
+        public string hintWin = "You are pulled up onto the roof and slip out through the breach.";
 
         private enum Stage
         {
@@ -84,7 +84,7 @@ namespace UnderwaterOptimization
             if (fillGO != null)
                 fillLight = fillGO.GetComponent<Light>();
 
-            // 绳索枪一开始不存在，打完电话才出现
+            // The rope gun does not exist until the call is finished
             RopeGun[] guns = FindObjectsOfType<RopeGun>(true);
             if (guns.Length > 0)
                 ropeGun = guns[0].gameObject;
@@ -95,7 +95,7 @@ namespace UnderwaterOptimization
 
             BuildHud();
             SetHint(hintStart);
-            SetObjective("目标 1/7：找到破损的手电筒");
+            SetObjective("Objective 1/7: Find the broken torch");
 
             if (exitZone != null)
                 exitZone.enabled = false;
@@ -103,10 +103,10 @@ namespace UnderwaterOptimization
             if (water != null)
             {
                 water.position = new Vector3(water.position.x, waterStartY, water.position.z);
-                // 通电之前水根本不存在，免得水波穿出地板
+                // No water before power is restored, so waves cannot poke through the floor
                 water.gameObject.SetActive(false);
 
-                // 浮力脚本先关掉：水没来之前东西不该飘
+                // Buoyancy is disabled until the water arrives
                 Floater[] floaters = FindObjectsOfType<Floater>(true);
                 foreach (Floater floater in floaters)
                     floater.enabled = false;
@@ -137,7 +137,7 @@ namespace UnderwaterOptimization
                 }
             }
 
-            // 调试便利：任何时候按 R 都能重开一局（不用退出 Play）
+            // Any time R restarts the level without leaving Play mode
             if (UnderwaterInput.RestartDown)
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
@@ -174,7 +174,7 @@ namespace UnderwaterOptimization
             if (fillLight != null)
                 fillLight.intensity = 600f;
 
-            SetHint("手电筒亮了 —— 整个舱内都看得清了");
+            SetHint("The torch is on. The whole hold is lit.");
         }
 
         public void OnGridPowered()
@@ -182,7 +182,7 @@ namespace UnderwaterOptimization
             if (stage == Stage.Idle)
                 EnterCrack();
 
-            SetObjective("目标 6/7：拨打求救电话");
+            SetObjective("Objective 6/7: Make the distress call");
         }
 
         public void EnterCrack()
@@ -198,7 +198,7 @@ namespace UnderwaterOptimization
                 water.position = new Vector3(water.position.x, waterStartY, water.position.z);
                 water.gameObject.SetActive(true);
 
-                // 水来了，东西才开始往上飘
+                // Once the water arrives, objects start to float
                 Floater[] floaters = FindObjectsOfType<Floater>(true);
                 foreach (Floater floater in floaters)
                     floater.enabled = true;
@@ -207,7 +207,7 @@ namespace UnderwaterOptimization
             if (exitZone != null)
                 exitZone.enabled = true;
 
-            SetObjective("目标 7/7：拿到绳索枪，射向舱顶的橙色锚点");
+            SetObjective("Objective 7/7: Take the rope gun and fire at the ceiling anchor");
             SetHint(hintFlood);
             StartShake();
         }
@@ -223,7 +223,7 @@ namespace UnderwaterOptimization
                 return;
 
             stage = Stage.Escaped;
-            SetHint("你被绳索拽上舱顶，从破口钻了出去");
+            SetHint("You are pulled up onto the roof and slip out through the breach.");
             SetAimInfo("", false);
             ShowVictory();
         }
@@ -249,17 +249,17 @@ namespace UnderwaterOptimization
 
                 Text title = CreateText(victoryPanel.transform, "VictoryTitle", 96, TextAnchor.MiddleCenter,
                     new Vector2(0.5f, 0.5f), new Vector2(0f, 110f), new Vector2(1600f, 180f), new Vector2(0.5f, 0.5f));
-                title.text = "逃出生天";
+                title.text = "ESCAPED";
                 title.color = new Color(1f, 0.84f, 0.42f, 1f);
 
                 Text subtitle = CreateText(victoryPanel.transform, "VictorySubtitle", 40, TextAnchor.MiddleCenter,
                     new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(1400f, 120f), new Vector2(0.5f, 0.5f));
-                subtitle.text = "恭喜通关";
+                subtitle.text = "Level complete";
                 subtitle.color = new Color(0.92f, 0.96f, 1f, 0.95f);
 
                 Text hint = CreateText(victoryPanel.transform, "VictoryHint", 30, TextAnchor.MiddleCenter,
                     new Vector2(0.5f, 0.5f), new Vector2(0f, -120f), new Vector2(1400f, 80f), new Vector2(0.5f, 0.5f));
-                hint.text = "通关 —— 可重新开始";
+                hint.text = "Complete. You can restart.";
                 hint.color = new Color(0.7f, 0.8f, 0.9f, 0.9f);
             }
 
@@ -295,7 +295,7 @@ namespace UnderwaterOptimization
             float level = Mathf.Max(0f, water.position.y - floorY);
 
             if (levelText != null)
-                levelText.text = "水位  " + level.ToString("F2") + " m";
+                levelText.text = "Water  " + level.ToString("F2") + " m";
 
             if (tint != null && playerCamera != null)
             {
@@ -320,9 +320,9 @@ namespace UnderwaterOptimization
 
             string[] lines =
             {
-                "……喂？有人吗！船在进水，我们在船舱里！",
-                "收到，救援船 30 分钟后到 —— 你们先想办法上到舱顶！",
-                "（电话挂了。水已经漫到脚边……得找到绳索枪，射向舱顶的锚点）"
+                "...Hello? Is anyone there! The ship is flooding, we are down in the hold!",
+                "Copy that. Rescue boat in 30 minutes. Get yourselves up to the roof!",
+                "(The line goes dead. Water is at your feet... find the rope gun and hit the anchor above.)"
             };
 
             for (int i = 0; i < lines.Length; i++)
@@ -332,18 +332,18 @@ namespace UnderwaterOptimization
                 if (dialogueText != null)
                     dialogueText.text = lines[i];
 
-                SetHint("通话中……");
+                SetHint("On the call...");
                 yield return new WaitForSeconds(2.8f);
             }
 
             if (dialoguePanel != null)
                 dialoguePanel.SetActive(false);
 
-            // 通完话，绳索枪才出现
+            // The rope gun appears once the call ends
             if (ropeGun != null)
             {
                 ropeGun.SetActive(true);
-                SetHint("救援就在舱顶 —— 拿上绳索枪，射向顶上的橙色锚点");
+                SetHint("Rescue is above. Take the rope gun and fire at the orange anchor.");
             }
 
             inDialogue = false;
@@ -381,7 +381,7 @@ namespace UnderwaterOptimization
 
             if (vr && playerCamera != null)
             {
-                // VR：世界空间，1.35 米外、略低于视线，跟着头走
+                // VR: world space, 1.35 m ahead and slightly below eye level
                 canvas.renderMode = RenderMode.WorldSpace;
                 canvas.worldCamera = playerCamera;
                 canvasGO.transform.SetParent(playerCamera.transform, false);
@@ -399,7 +399,7 @@ namespace UnderwaterOptimization
                 scaler.matchWidthOrHeight = 0.5f;
             }
 
-            // 水下色偏（全屏蒙版）
+            // Underwater colour tint (full screen overlay)
             GameObject tintGO = new GameObject("Tint");
             tintGO.transform.SetParent(canvasGO.transform, false);
             tint = tintGO.AddComponent<Image>();
@@ -411,7 +411,7 @@ namespace UnderwaterOptimization
             tintRect.offsetMin = Vector2.zero;
             tintRect.offsetMax = Vector2.zero;
 
-            // 准星
+            // Crosshair
             GameObject crossGO = new GameObject("Crosshair");
             crossGO.transform.SetParent(canvasGO.transform, false);
             Image crosshair = crossGO.AddComponent<Image>();
@@ -427,23 +427,23 @@ namespace UnderwaterOptimization
             if (vr)
                 crosshair.gameObject.SetActive(false);
 
-            // 顶部提示
+            // Top hint
             hud = CreateText(canvasGO.transform, "Hint", 30, TextAnchor.UpperCenter,
                 new Vector2(0.5f, 1f), new Vector2(0f, -42f), new Vector2(1500f, 140f), new Vector2(0.5f, 1f));
             hud.text = hintStart;
 
-            // 左上角当前目标
+            // Current objective, top left
             objectiveText = CreateText(canvasGO.transform, "Objective", 26, TextAnchor.UpperLeft,
                 new Vector2(0f, 1f), new Vector2(48f, -40f), new Vector2(900f, 60f), new Vector2(0f, 1f));
             objectiveText.color = new Color(1f, 0.82f, 0.4f, 0.95f);
-            objectiveText.text = "目标 1/7：找到破损的手电筒";
+            objectiveText.text = "Objective 1/7: Find the broken torch";
 
-            // 左下水位
+            // Water level, bottom left
             levelText = CreateText(canvasGO.transform, "WaterLevel", 28, TextAnchor.LowerLeft,
                 new Vector2(0f, 0f), new Vector2(48f, 42f), new Vector2(420f, 60f), new Vector2(0f, 0f));
-            levelText.text = "水位  0.00 m";
+            levelText.text = "Water  0.00 m";
 
-            // 底部对话框（打电话时用）
+            // Dialogue box at the bottom
             GameObject panelGO = new GameObject("Dialogue");
             panelGO.transform.SetParent(canvasGO.transform, false);
             Image panel = panelGO.AddComponent<Image>();
@@ -463,7 +463,7 @@ namespace UnderwaterOptimization
             dialoguePanel = panelGO;
             dialoguePanel.SetActive(false);
 
-            // 准星下方的"指向"信息
+            // Aim info under the crosshair
             aimInfoText = CreateText(canvasGO.transform, "AimInfo", 24, TextAnchor.MiddleCenter,
                 new Vector2(0.5f, 0.5f), new Vector2(0f, -46f), new Vector2(900f, 50f), new Vector2(0.5f, 0.5f));
             aimInfoText.color = new Color(0.85f, 0.95f, 1f, 0.9f);

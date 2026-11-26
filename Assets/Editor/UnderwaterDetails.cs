@@ -19,7 +19,7 @@ namespace UnderwaterOptimization
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace UnderwaterOptimization
             GameObject holeLightGO = GameObject.Find("Underwater_HoleLight");
             if (holeLightGO == null)
             {
-                Debug.LogWarning("[Underwater] 没找到 Underwater_HoleLight，请先运行 1. Setup Atmosphere。");
+                Debug.LogWarning("[Underwater] Underwater_HoleLight not found. Run 1. Setup Atmosphere first.");
                 return;
             }
 
@@ -53,7 +53,7 @@ namespace UnderwaterOptimization
         {
             DestroyIfExists(ShaftName);
 
-            // 灯在船体上方（y≈38），但玩家能看到的“光柱”是从舱内天花板（y≈18）漏下来的那一段。
+            // The light sits above the hull (y≈38); the visible shaft is the part coming through the ceiling (y≈18).
             float ceilingY = 18.2f;
             float floorY = 4.5f;
             float length = Mathf.Max(4f, ceilingY - floorY);
@@ -155,7 +155,7 @@ namespace UnderwaterOptimization
             Camera cam = Camera.main;
             if (cam == null)
             {
-                Debug.LogWarning("[Underwater] 没找到 Main Camera，跳过手电筒。");
+                Debug.LogWarning("[Underwater] Main Camera not found, skipping the torch.");
                 return;
             }
 
@@ -187,7 +187,7 @@ namespace UnderwaterOptimization
             Shader shader = Shader.Find(shaderName);
             if (shader == null)
             {
-                Debug.LogError("[Underwater] 找不到 Shader：" + shaderName + "（确认 Assets/Shader 下的 .shader 已编译）");
+                Debug.LogError("[Underwater] Shader not found: " + shaderName + " (check that the shaders in Assets/Shader compiled)");
                 return null;
             }
 

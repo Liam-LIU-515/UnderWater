@@ -21,7 +21,7 @@ namespace UnderwaterOptimization
 
             if (powerGrid == null)
             {
-                // 箱子没打开时面板是隐藏的，要把 inactive 的也找出来
+                // The panel is hidden until the box opens, so search inactive objects too
                 PowerGridPanel[] panels = FindObjectsOfType<PowerGridPanel>(true);
                 if (panels.Length > 0)
                     powerGrid = panels[0];
@@ -49,7 +49,7 @@ namespace UnderwaterOptimization
             go.transform.localPosition = new Vector3(0f, 0.6f, 0f);
 
             label = go.AddComponent<TextMesh>();
-            label.text = "求救电话";
+            label.text = "Emergency phone";
             label.fontSize = 48;
             label.characterSize = 0.05f;
             label.anchor = TextAnchor.MiddleCenter;
@@ -73,7 +73,7 @@ namespace UnderwaterOptimization
 
             float distance = Vector3.Distance(playerRoot.position, transform.position);
             bool near = distance <= useRange;
-            // 只有电网真的通了才能打电话（找不到面板也不算通）
+            // The phone only works with real power; a missing panel does not count
             bool powered = powerGrid != null && powerGrid.IsPowered;
 
             if (near)
@@ -81,12 +81,12 @@ namespace UnderwaterOptimization
                 if (!powered)
                 {
                     if (flow != null)
-                        flow.SetHint("电话没电 —— 先去左边墙上把电网接好");
+                        flow.SetHint("No power. Reconnect the wiring panel on the wall first.");
                 }
                 else
                 {
                     if (flow != null)
-                        flow.SetHint("请拨打求救电话");
+                        flow.SetHint("Make the distress call");
 
                     if (UnderwaterInput.InteractDown)
                         Call();
@@ -95,7 +95,7 @@ namespace UnderwaterOptimization
 
             if (label != null)
         {
-            string want = "求救电话";
+            string want = "Emergency phone";
             if (label.text != want) label.text = want;
         }
 
@@ -115,7 +115,7 @@ namespace UnderwaterOptimization
 
             if (flow != null)
                 flow.PlayCallDialogue();
-                flow.SetObjective("目标 7/7：水在涨 —— 拿绳索枪射向舱顶锚点");
+                flow.SetObjective("Objective 7/7: Water is rising. Rope gun to the ceiling anchor");
 
         }
     }

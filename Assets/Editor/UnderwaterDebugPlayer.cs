@@ -13,12 +13,12 @@ namespace UnderwaterOptimization
         private const string CameraName = "DebugCamera";
         private const string FlashlightName = "Underwater_Flashlight";
 
-        [MenuItem("Tools/Underwater/7. Add Debug Player (桌面调试)", false, 7)]
+        [MenuItem("Tools/Underwater/7. Add Debug Player (desktop)", false, 7)]
         public static void AddDebugPlayerMenu()
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -28,12 +28,12 @@ namespace UnderwaterOptimization
             EditorSceneManager.SaveScene(scene);
         }
 
-        [MenuItem("Tools/Underwater/8. Remove Debug Player (恢复相机)", false, 8)]
+        [MenuItem("Tools/Underwater/8. Remove Debug Player (restore camera)", false, 8)]
         public static void RemoveDebugPlayerMenu()
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -117,9 +117,9 @@ namespace UnderwaterOptimization
             DebugPlayerMotor motor = root.AddComponent<DebugPlayerMotor>();
             motor.cameraTransform = cameraGO.transform;
 
-            return "[Underwater] 调试角色已生成：DebugPlayer @ (25, 0.65, 40)，Tag=Player。\n" +
-                   "进 Play 后：WASD 走动、Shift 跑、空格跳、鼠标转视角、F 开手电。\n" +
-                   "Main Camera 和 Preview_Inside 已暂时关闭；不用了点菜单 8 恢复。";
+            return "[Underwater] Debug player created: DebugPlayer @ (25, 0.65, 40), Tag=Player.\n" +
+                   "In Play: WASD move, Shift run, Space jump, mouse look, F torch.\n" +
+                   "Main Camera and Preview_Inside were disabled; use menu 8 to restore.";
         }
 
         public static void RemoveDebugPlayer()

@@ -39,7 +39,7 @@ namespace UnderwaterOptimization
                 preview.material = material;
             }
 
-            // 兜底：场景里没配列表时自动收集
+            // Fallback: collect the terminals automatically if the list is empty
             if (terminals.Count == 0)
             {
                 PowerTerminal[] found = FindObjectsOfType<PowerTerminal>(true);
@@ -61,13 +61,13 @@ namespace UnderwaterOptimization
             if (!nearPanel)
             {
                 if (selected != null)
-                    Cancel("离开接线板，线放回去了");
+                    Cancel("Left the panel. Wire released.");
 
                 nearPanel = false;
                 return;
             }
 
-            // 空手：按住左键抓最近的一根线
+            // Empty handed: grab the nearest wire
             if (selected == null && UnderwaterInput.FireDown)
             {
                 selected = FindNearest(direction, origin, true);
@@ -82,7 +82,7 @@ namespace UnderwaterOptimization
                 }
             }
 
-            // 抓着手：线实时跟准星，松开就接
+            // Holding a wire: it follows the crosshair, release to connect
             if (selected != null)
             {
                 Vector3 tip = origin + direction * 4f;
@@ -99,7 +99,7 @@ namespace UnderwaterOptimization
             }
         }
 
-        // 提示放在 LateUpdate，盖过电话/绳索枪每帧刷新的文字
+        // The hint runs in LateUpdate so it overrides the phone and gun hints
         private void LateUpdate()
         {
             if (flow == null || IsPowered || !nearPanel)
@@ -109,12 +109,12 @@ namespace UnderwaterOptimization
             {
                 PowerTerminal partner = FindPartner(selected);
                 flow.SetHint(partner != null
-                    ? "拖着" + PowerTerminal.NameOf(selected.colorIndex) + "的线 —— 松开就接到另一个端子上"
-                    : "把线拖到空处松开？");
+                    ? "Dragging the " + PowerTerminal.NameOf(selected.colorIndex) + " wire. Release to connect it."
+                    : "Release the wire?");
             }
             else
             {
-                flow.SetHint("请抓取电线（" + connected + "/" + (terminals.Count / 2) + " 已接）");
+                flow.SetHint("Grab a wire (" + connected + "/" + (terminals.Count / 2) + " connected)");
             }
         }
 
@@ -141,7 +141,7 @@ namespace UnderwaterOptimization
 
                 float angle = Vector3.Angle(direction, to);
 
-                // 角度优先，其次距离
+                // Prefer angle, then distance
                 float score = angle * 2f + distance;
 
                 if (score < bestScore)
@@ -176,7 +176,7 @@ namespace UnderwaterOptimization
 
             if (partner == null)
             {
-                Cancel("没接上 —— 这根线已经接好过了");
+                Cancel("Not connected. That wire is already used.");
                 return;
             }
 
@@ -213,13 +213,13 @@ namespace UnderwaterOptimization
             {
                 if (flow != null)
                 {
-                    flow.SetHint("电路接好了 —— 水开始漫进来，快去打电话");
+                    flow.SetHint("Power restored. Water is coming in, make the call.");
                     flow.OnGridPowered();
                 }
             }
             else if (flow != null)
             {
-                flow.SetHint("接好 " + connected + "/" + (terminals.Count / 2) + " 组");
+                flow.SetHint("Connected " + connected + "/" + (terminals.Count / 2) + " pairs");
             }
         }
 

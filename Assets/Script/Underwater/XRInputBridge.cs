@@ -24,7 +24,7 @@ namespace UnderwaterOptimization
             }
             else
             {
-                Debug.LogWarning("[Underwater] 没找到右手射线，退化成相机射线。");
+                Debug.LogWarning("[Underwater] Right-hand ray not found, falling back to the camera ray.");
             }
         }
 

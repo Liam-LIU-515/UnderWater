@@ -24,7 +24,7 @@ namespace UnderwaterOptimization
             if (keyObject != null)
                 keyObject.SetActive(false);
 
-            // 电池一开始不存在：捡到手电筒之后才出现
+            // The battery does not exist at first: it appears once the torch is picked up
             if (batteryObject == null)
             {
                 QuestItem[] items = FindObjectsOfType<QuestItem>(true);
@@ -60,7 +60,7 @@ namespace UnderwaterOptimization
                     return light;
             }
 
-            // VR 里没有现成的手电，在相机上新建一盏
+            // No torch exists in VR, so create one on the camera
             Camera cam = Camera.main;
             if (cam == null)
                 return null;
@@ -92,7 +92,7 @@ namespace UnderwaterOptimization
                 return;
             }
 
-            // 捡完手电筒，电池才出现
+            // The battery appears only after the torch is picked up
             if (type == QuestItemType.BrokenFlashlight && batteryObject != null)
                 batteryObject.SetActive(true);
 
@@ -100,11 +100,11 @@ namespace UnderwaterOptimization
                 return;
 
             flow.SetHint(type == QuestItemType.BrokenFlashlight
-                ? "捡到破损的手电筒 —— 还缺电池"
-                : "捡到电池 —— 回去装进手电筒");
+                ? "Broken torch picked up. Still missing a battery."
+                : "Battery picked up. Fit it into the torch.");
 
             if (flow != null && type == QuestItemType.BrokenFlashlight)
-                flow.SetObjective("目标 2/7：找到电池");
+                flow.SetObjective("Objective 2/7: Find the battery");
         }
 
         private void Assemble()
@@ -115,7 +115,7 @@ namespace UnderwaterOptimization
             if (playerLight != null)
             {
                 playerLight.enabled = true;
-                // 别刺眼：亮度压低、光锥放宽
+                // Keep it soft: lower intensity, wider cone
                 playerLight.intensity = 300f;
                 playerLight.range = 26f;
                 playerLight.spotAngle = 62f;
@@ -125,8 +125,8 @@ namespace UnderwaterOptimization
                 keyObject.SetActive(true);
 
             if (flow != null)
-                flow.SetHint("手电筒亮了 —— 有光照着，角落里的钥匙才看得出来");
-                flow.SetObjective("目标 3/7：有光了 —— 找到钥匙");
+                flow.SetHint("The torch is on. Now the key in the corner is visible.");
+                flow.SetObjective("Objective 3/7: With light, find the key");
                 flow.OnFlashlightAssembled();
 
         }

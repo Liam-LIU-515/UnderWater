@@ -44,7 +44,7 @@ namespace UnderwaterOptimization
             go.transform.localPosition = new Vector3(0f, 0.35f, 0f);
 
             label = go.AddComponent<TextMesh>();
-            label.text = "钥匙";
+            label.text = "Key";
             label.fontSize = 48;
             label.characterSize = 0.045f;
             label.anchor = TextAnchor.MiddleCenter;
@@ -69,7 +69,7 @@ namespace UnderwaterOptimization
             if (quest != null && !quest.HasLight)
             {
                 if (Vector3.Distance(playerRoot.position, transform.position) <= pickupRange && flow != null)
-                    flow.SetHint("太黑了，什么都看不清 —— 得先弄到光");
+                    flow.SetHint("Too dark to see anything. Get some light first.");
                 return;
             }
 
@@ -79,7 +79,7 @@ namespace UnderwaterOptimization
             if (aiming)
             {
                 if (flow != null)
-                    flow.SetHint("请捡取该物品");
+                    flow.SetHint("Pick up the item");
 
                 if (UnderwaterInput.InteractDown)
                 {
@@ -102,8 +102,8 @@ namespace UnderwaterOptimization
             gameObject.SetActive(false);
 
             if (flow != null)
-                flow.SetHint("拿到钥匙了 —— 去开墙上的呼救箱");
-                flow.SetObjective("目标 4/7：用钥匙打开墙上的呼救箱");
+                flow.SetHint("Key acquired. Open the rescue box on the wall.");
+                flow.SetObjective("Objective 4/7: Unlock the rescue box with the key");
 
         }
     }

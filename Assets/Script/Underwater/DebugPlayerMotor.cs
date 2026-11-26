@@ -5,16 +5,16 @@ namespace UnderwaterOptimization
     [RequireComponent(typeof(UnityEngine.CharacterController))]
     public class DebugPlayerMotor : MonoBehaviour
     {
-        [Header("引用")]
+        [Header("References")]
         public Transform cameraTransform;
 
-        [Header("移动")]
+        [Header("Movement")]
         public float walkSpeed = 3.2f;
         public float sprintSpeed = 5.4f;
         public float gravity = -22f;
         public float jumpHeight = 1.0f;
 
-        [Header("视角")]
+        [Header("Look")]
         public float mouseSensitivity = 2.2f;
         public bool lockCursor = true;
 
@@ -53,7 +53,7 @@ namespace UnderwaterOptimization
                     cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
             }
 
-            // Esc 松开鼠标 / 点回 Game 视图重新锁定
+            // Esc releases the cursor; click the Game view to lock it again
             if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked && lockCursor)
                 Cursor.lockState = CursorLockMode.Locked;
         }

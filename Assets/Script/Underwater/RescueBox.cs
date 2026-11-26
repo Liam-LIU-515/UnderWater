@@ -47,12 +47,12 @@ namespace UnderwaterOptimization
             if (!KeyPickup.HasKey)
             {
                 if (flow != null)
-                    flow.SetHint("呼救箱锁着 —— 先找到钥匙");
+                    flow.SetHint("The rescue box is locked. Find the key.");
                 return;
             }
 
             if (flow != null)
-                flow.SetHint("请打开呼救箱");
+                flow.SetHint("Open the rescue box");
 
             if (UnderwaterInput.InteractDown)
                 Open();
@@ -65,14 +65,14 @@ namespace UnderwaterOptimization
             if (panel != null)
                 panel.gameObject.SetActive(true);
 
-            // 门直接收起来，别挡视线也别挡射线
+            // Remove the door so it never blocks the view or the ray
             if (door != null)
                 door.gameObject.SetActive(false);
 
             if (flow != null)
             {
-                flow.SetHint("箱子里是接线板 —— 把线拖到同色的端子上");
-                flow.SetObjective("目标 5/7：接好三组电线");
+                flow.SetHint("Wiring panel inside. Drag each wire onto the matching terminal.");
+                flow.SetObjective("Objective 5/7: Reconnect the three wires");
             }
 
         }

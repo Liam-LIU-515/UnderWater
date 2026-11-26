@@ -46,7 +46,7 @@ namespace UnderwaterOptimization
             float n = Mathf.PerlinNoise(seed, Time.time * 0.9f);
             spot.intensity = baseIntensity * (1f - n * flickerAmount);
 
-            // 走路时的轻微晃动（VR 里也能感知到手在动）
+            // Subtle walking sway
             float bob = Mathf.Sin(Time.time * 5f) * 0.0015f * bobAmount;
             float sway = Mathf.Cos(Time.time * 3.3f) * 0.0015f * bobAmount;
             transform.localPosition = baseLocalPosition + new Vector3(sway, bob, 0f);

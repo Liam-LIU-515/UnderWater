@@ -14,12 +14,12 @@ namespace UnderwaterOptimization
 
         private static readonly Vector3 CrackPoint = new Vector3(24.64f, 0.62f, 51.7f);
 
-        [MenuItem("Tools/Underwater/9. Build Greybox Flow (关卡流程)", false, 9)]
+        [MenuItem("Tools/Underwater/9. Build Level Flow", false, 9)]
         public static void BuildMenu()
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace UnderwaterOptimization
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -76,7 +76,7 @@ namespace UnderwaterOptimization
                 EditorUtility.SetDirty(deckMat);
             }
 
-            // 指路标记用 Unlit + HDR 颜色，比 Lit 的 Emission 稳，Bloom 会自动吃到
+            // Markers use Unlit with an HDR colour so bloom picks them up reliably
             Material markerMat = GetOrCreateMaterial("Mat_FlowMarker", "Universal Render Pipeline/Unlit");
             if (markerMat != null)
             {
@@ -91,14 +91,14 @@ namespace UnderwaterOptimization
                 EditorUtility.SetDirty(exitMat);
             }
 
-            // 水：带顶点起伏的平面，初始藏在地板下面，触发后往上涨
+            // Water: a vertex-animated plane hidden under the floor until triggered
             GameObject water = CreateWater("Flow_Water", new Vector3(25f, 0.35f, 52f), 56f, 88f, waterMat);
 
-            // 舱顶逃生口：一块检修平台 + 上方的锚点（终点在船顶附近）
+            // Roof exit: a maintenance platform plus the anchor above it
             float ceilingY = 15.2f;
             CreateBox("Flow_CeilingLedge", new Vector3(30f, ceilingY, 52f), new Vector3(3.2f, 0.4f, 3.2f), deckMat);
 
-            // 绳索锚点：舱顶的橙色光球（有碰撞，能被射线打中）
+            // Rope anchor: the orange orb on the ceiling, with a collider
             GameObject anchorGO = new GameObject("Flow_RopeAnchor");
             Undo.RegisterCreatedObjectUndo(anchorGO, "Create Rope Anchor");
             anchorGO.name = "Flow_RopeAnchor";
@@ -119,7 +119,7 @@ namespace UnderwaterOptimization
             Undo.RegisterCreatedObjectUndo(landing, "Create Rope Landing");
             landing.transform.position = new Vector3(31.0f, ceilingY + 0.55f, 52f);
 
-            // 给锚点加一盏小灯，暗舱里远处也能看见
+            // A small light so the anchor is visible in the dark
             Light anchorLight = anchorGO.AddComponent<Light>();
             anchorLight.type = LightType.Point;
             anchorLight.color = new Color(1f, 0.55f, 0.2f);
@@ -130,10 +130,10 @@ namespace UnderwaterOptimization
             RopeAnchor ropeAnchor = anchorGO.AddComponent<RopeAnchor>();
             ropeAnchor.landingPoint = landing.transform;
 
-            // 绳索枪：从原来的模型位置挪到地面，方便捡
+            // Rope gun moved to the deck so it is easy to pick up
             SetupRopeGun();
 
-            // 手电别太爆：近距离扫到白模会糊成一片
+            // Keep the torch calm so nearby surfaces do not blow out
             GameObject flashlight = GameObject.Find("Underwater_Flashlight");
             if (flashlight != null)
             {
@@ -145,19 +145,19 @@ namespace UnderwaterOptimization
                 }
             }
 
-            // 求救电话：打完电话才开始进水
+            // Emergency phone: the flooding starts after the call
             SetupSosPhone(deckMat);
             SetupPowerGrid(deckMat);
             SetupKey(exitMat);
             SetupQuest(deckMat, exitMat);
 
-            // 把电话和电网面板接起来（电话必须通电才能打）
+            // Wire the phone to the power panel (it needs power)
             SosPhone sosPhone = Object.FindObjectOfType<SosPhone>();
             PowerGridPanel gridPanel = Object.FindObjectOfType<PowerGridPanel>();
             if (sosPhone != null && gridPanel != null)
                 sosPhone.powerGrid = gridPanel;
 
-            // 控制器
+            // Controller
             GameObject controllerGO = new GameObject(ControllerName);
             Undo.RegisterCreatedObjectUndo(controllerGO, "Create Flow Controller");
 
@@ -169,7 +169,7 @@ namespace UnderwaterOptimization
             if (holeLightGO != null)
                 flow.holeLight = holeLightGO.GetComponent<Light>();
 
-            // 顺手把氛围细节（光柱 + 尘埃）也带上；呼吸交给 UnderwaterFlow 控制，这里不重复挂
+            // Also build the light shaft and dust; breathing is handled by UnderwaterFlow
             UnderwaterDetails.BuildAll();
             if (holeLightGO != null)
             {
@@ -178,7 +178,7 @@ namespace UnderwaterOptimization
                     Object.DestroyImmediate(flicker);
             }
 
-            // 求救电话拿到 controller 引用，打完才进水
+            // The phone gets the controller reference; flooding waits for the call
             SosPhone phone = Object.FindObjectOfType<SosPhone>();
             if (phone != null)
                 phone.flow = flow;
@@ -230,15 +230,15 @@ namespace UnderwaterOptimization
                 panel.terminals.Add(terminal);
             }
 
-            // 箱体外壳：把接线板、电话包成"一台设备"
+            // Cabinet shell so the panel and phone read as one unit
             CreateBox("Flow_CabinetBack", new Vector3(19.36f, 1.85f, 47.4f), new Vector3(0.1f, 2.1f, 2.95f), panelMaterial);
             CreateBox("Flow_CabinetTop", new Vector3(19.8f, 2.93f, 47.4f), new Vector3(0.95f, 0.1f, 2.95f), panelMaterial);
             CreateBox("Flow_CabinetBottom", new Vector3(19.8f, 0.77f, 47.4f), new Vector3(0.95f, 0.1f, 2.95f), panelMaterial);
             CreateBox("Flow_CabinetSideL", new Vector3(19.8f, 1.85f, 45.95f), new Vector3(0.95f, 2.1f, 0.1f), panelMaterial);
             CreateBox("Flow_CabinetSideR", new Vector3(19.8f, 1.85f, 48.85f), new Vector3(0.95f, 2.1f, 0.1f), panelMaterial);
 
-            // 呼救箱的门：挡在接线板和电话前面，用钥匙才能拉开
-            // 用 CreateMarker：不带碰撞体，开门后不会挡射线
+            // Cabinet door: covers the panel and phone, unlocked with the key
+            // Built as a marker: no collider, so it never blocks the ray
             GameObject door = CreateMarker("Flow_BoxDoor",
                 new Vector3(19.98f, 1.85f, 47.4f), new Vector3(0.08f, 2.05f, 2.9f), panelMaterial);
 
@@ -302,7 +302,7 @@ namespace UnderwaterOptimization
             if (oldDesk != null)
                 Undo.DestroyObjectImmediate(oldDesk);
 
-            // 电话直接装在呼救箱顶上，和接线板是一台设备
+            // The phone sits inside the cabinet together with the panel
             GameObject phoneGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Undo.RegisterCreatedObjectUndo(phoneGO, "Create Phone");
             phoneGO.name = "Flow_Phone";
@@ -311,7 +311,7 @@ namespace UnderwaterOptimization
             phoneGO.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
             Renderer phoneRenderer = phoneGO.GetComponent<Renderer>();
 
-            // 电话用发光材质 + 一盏小灯，暗舱里也能一眼看到
+            // The phone uses an emissive material and a small light
             Material phoneMat = AssetDatabase.LoadAssetAtPath<Material>(SettingsFolder + "/Mat_FlowExit.mat");
             if (phoneRenderer != null)
                 phoneRenderer.sharedMaterial = phoneMat != null ? phoneMat : deckMaterial;
@@ -331,7 +331,7 @@ namespace UnderwaterOptimization
             GameObject gun = GameObject.Find("Rope gun simple");
             if (gun == null)
             {
-                Debug.LogWarning("[Underwater] 没找到 Rope gun simple，跳过绳索枪。");
+                Debug.LogWarning("[Underwater] Rope gun simple not found, skipping the rope gun.");
                 return;
             }
 
@@ -339,7 +339,7 @@ namespace UnderwaterOptimization
             gun.transform.position = new Vector3(24.8f, 1.6f, 46.5f);
             gun.transform.rotation = Quaternion.identity;
 
-            // 清掉脚本重导后留下的 Missing Script
+            // Remove missing scripts left after reimports
             GameObjectUtility.RemoveMonoBehavioursWithMissingScript(gun);
 
             RopeGun ropeGun = gun.GetComponent<RopeGun>();
@@ -547,7 +547,7 @@ namespace UnderwaterOptimization
             Shader shader = Shader.Find(shaderName);
             if (shader == null)
             {
-                Debug.LogError("[Underwater] 找不到 Shader：" + shaderName);
+                Debug.LogError("[Underwater] Shader not found: " + shaderName);
                 return null;
             }
 

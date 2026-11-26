@@ -24,7 +24,7 @@ namespace UnderwaterOptimization
 
         private string LabelText
         {
-            get { return type == QuestItemType.BrokenFlashlight ? "破损的手电筒" : "电池"; }
+            get { return type == QuestItemType.BrokenFlashlight ? "Broken torch" : "Battery"; }
         }
 
         private void Start()
@@ -50,7 +50,7 @@ namespace UnderwaterOptimization
 
         private void AddGlow()
         {
-            // 一点点自发光，暗到看不见时也能注意到它
+            // A faint self-illumination so it is noticeable in the dark
             Light glow = gameObject.AddComponent<Light>();
             glow.type = LightType.Point;
             glow.color = new Color(1f, 0.85f, 0.55f);
@@ -93,10 +93,10 @@ namespace UnderwaterOptimization
 
             if (aiming)
             {
-                string itemName = type == QuestItemType.BrokenFlashlight ? "手电筒" : "电池";
+                string itemName = type == QuestItemType.BrokenFlashlight ? "Torch" : "Battery";
 
                 if (flow != null)
-                    flow.SetHint("请捡取该物品");
+                    flow.SetHint("Pick up the item");
 
                 if (UnderwaterInput.InteractDown)
                 {

@@ -4,7 +4,7 @@ namespace UnderwaterOptimization
 {
     public class RopeGun : MonoBehaviour
     {
-        [Header("手感")]
+        [Header("Feel")]
         public float pickupRange = 2.5f;
         public float maxRange = 45f;
         public float zipDuration = 1.1f;
@@ -69,7 +69,7 @@ namespace UnderwaterOptimization
             go.transform.localPosition = new Vector3(0f, 0.55f, 0f);
 
             label = go.AddComponent<TextMesh>();
-            label.text = "绳索枪";
+            label.text = "Rope gun";
             label.fontSize = 48;
             label.characterSize = 0.055f;
             label.anchor = TextAnchor.MiddleCenter;
@@ -152,7 +152,7 @@ namespace UnderwaterOptimization
             aimDot.gameObject.SetActive(true);
             aimDot.position = hit.point + hit.normal * 0.03f;
 
-            // 瞄着接线端子时把界面让给接线逻辑
+            // While aiming at a terminal, leave the UI to the wiring logic
             if (hit.collider.GetComponentInParent<PowerTerminal>() != null)
             {
                 aimDot.gameObject.SetActive(false);
@@ -181,12 +181,12 @@ namespace UnderwaterOptimization
             }
 
             if (flow != null && Time.time > messageUntil)
-                flow.SetHint(onAnchor ? "锁定锚点 —— 可以发射" : "对准橙色锚点才能钩住");
+                flow.SetHint(onAnchor ? "Anchor locked. Ready to fire." : "Aim at the orange anchor to hook it.");
 
             if (flow != null)
                 flow.SetAimInfo(onAnchor
-                    ? "✔ 锚点 · " + hit.distance.ToString("F1") + " m"
-                    : "指向 " + hit.distance.ToString("F1") + " m", onAnchor);
+                    ? "✔ Anchor · " + hit.distance.ToString("F1") + " m"
+                    : "Range " + hit.distance.ToString("F1") + " m", onAnchor);
         }
 
         private void BuildAimDot()
@@ -237,7 +237,7 @@ namespace UnderwaterOptimization
             bool inRange = distance <= pickupRange;
 
             if (inRange && flow != null)
-                flow.SetHint("请拾取绳索枪");
+                flow.SetHint("Pick up the rope gun");
 
             if (inRange && UnderwaterInput.InteractDown)
             {
@@ -251,7 +251,7 @@ namespace UnderwaterOptimization
                 if (label != null)
                     label.gameObject.SetActive(false);
 
-                // 手里的枪不能再挡住射线
+                // The held gun must not block the ray
                 Collider[] colliders = GetComponentsInChildren<Collider>();
                 for (int i = 0; i < colliders.Length; i++)
                     colliders[i].enabled = false;
@@ -259,8 +259,8 @@ namespace UnderwaterOptimization
                 transform.localScale = Vector3.one * heldScale;
 
                 if (flow != null)
-                    flow.SetHint("朝高处的橙色锚点发射绳索");
-                flow.SetObjective("目标 7/7：瞄准舱顶橙色锚点并发射");
+                    flow.SetHint("Fire the rope at the orange anchor above.");
+                flow.SetObjective("Objective 7/7: Aim at the orange anchor and fire");
             }
 
             wasInRange = inRange;
@@ -276,7 +276,7 @@ namespace UnderwaterOptimization
             if (playerCamera == null)
                 return;
 
-            // 始终朝向玩家，别背面朝人
+            // Always face the player
             label.transform.rotation = playerCamera.transform.rotation;
         }
 
@@ -284,7 +284,7 @@ namespace UnderwaterOptimization
         {
             Transform cam = playerCamera.transform;
 
-            // 手里的小枪：缩小、放到右下角，别挡住准星和视野
+            // Small in-hand gun: scaled down, bottom right, clear of the crosshair
             transform.localScale = Vector3.one * heldScale;
             transform.position = cam.position + cam.forward * 0.55f + cam.right * 0.34f - cam.up * 0.32f;
             transform.rotation = cam.rotation * Quaternion.Euler(0f, -18f, 0f);
@@ -297,7 +297,7 @@ namespace UnderwaterOptimization
 
             if (Physics.Raycast(ray, out hit, maxRange, ~0, QueryTriggerInteraction.Ignore))
             {
-                // 瞄着接线端子时不开枪，避免和接线抢输入
+                // Do not fire while aiming at a terminal
                 if (hit.collider.GetComponentInParent<PowerTerminal>() != null)
                     return;
 
@@ -310,7 +310,7 @@ namespace UnderwaterOptimization
             }
 
             if (flow != null)
-                flow.SetHint("没钩中 —— 瞄准高处的橙色锚点");
+                flow.SetHint("Missed. Aim at the orange anchor above.");
             messageUntil = Time.time + 1.5f;
         }
 
@@ -331,7 +331,7 @@ namespace UnderwaterOptimization
                 line.enabled = true;
 
             if (flow != null)
-                flow.SetHint("绳索命中！");
+                flow.SetHint("Rope attached!");
         }
 
         private void UpdateZip()

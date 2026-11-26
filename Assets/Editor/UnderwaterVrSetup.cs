@@ -18,7 +18,7 @@ namespace UnderwaterOptimization
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -45,14 +45,14 @@ namespace UnderwaterOptimization
 
             GameObject originPrefab = FindPrefab("XR Origin (XR Rig)");
             if (originPrefab == null)
-                return "[Underwater] 找不到 XR Origin 预fab，先看 Package Manager 里 XRI 示例是否导入成功。";
+                return "[Underwater] XR Origin prefab not found. Check that the XRI samples imported.";
 
             GameObject rig = (GameObject)PrefabUtility.InstantiatePrefab(originPrefab);
             rig.name = RootName;
             rig.transform.position = new Vector3(25f, 1.2f, 40f);
             rig.transform.rotation = Quaternion.identity;
 
-            // 关掉桌面角色和相机，避免抢画面
+            // Disable the desktop character and camera so they do not compete
             GameObject debugPlayer = GameObject.Find("DebugPlayer");
             if (debugPlayer != null)
                 debugPlayer.SetActive(false);
@@ -65,7 +65,7 @@ namespace UnderwaterOptimization
                 cam.enabled = false;
             }
 
-            // 只保留 VR 相机上的 AudioListener，消掉 "2 audio listeners" 警告
+            // Keep only the VR camera AudioListener to avoid the duplicate warning
             AudioListener[] listeners = Object.FindObjectsOfType<AudioListener>();
             foreach (AudioListener listener in listeners)
             {
@@ -79,7 +79,7 @@ namespace UnderwaterOptimization
                 GameObject sim = (GameObject)PrefabUtility.InstantiatePrefab(locoPrefab);
                 sim.name = SimulatorName;
 
-                // 关掉模拟器自带的手模型，别挡住我们自己的手柄
+                // Hide the simulator hand models
                 Renderer[] simRenderers = sim.GetComponentsInChildren<Renderer>(true);
                 foreach (Renderer renderer in simRenderers)
                 {
@@ -98,7 +98,7 @@ namespace UnderwaterOptimization
             if (bridge == null)
                 bridge = rig.AddComponent<XRInputBridge>();
 
-            return importReport + "\n[Underwater] VR 角色已就位：WASD 移动（模拟器）、鼠标看、右键传送、手柄射线交互。";
+            return importReport + "\n[Underwater] VR rig ready: WASD (simulator), mouse look, controller ray interaction.";
         }
 
         [MenuItem("Tools/Underwater/12. Toggle Desktop / VR", false, 12)]
@@ -106,7 +106,7 @@ namespace UnderwaterOptimization
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -152,7 +152,7 @@ namespace UnderwaterOptimization
         {
             System.Collections.Generic.IEnumerable<Sample> samples = Sample.FindByPackage("com.unity.xr.interaction.toolkit", null);
             if (samples == null)
-                return "[Underwater] 没读到 XRI 示例列表。";
+                return "[Underwater] Could not read the XRI sample list.";
 
             int imported = 0;
             foreach (Sample sample in samples)
@@ -165,7 +165,7 @@ namespace UnderwaterOptimization
             }
 
             AssetDatabase.Refresh();
-            return "[Underwater] XRI 示例导入：" + imported + " 个。";
+            return "[Underwater] XRI samples imported: " + imported + ".";
         }
 
         private static GameObject FindPrefab(string name)

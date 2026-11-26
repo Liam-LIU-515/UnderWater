@@ -14,7 +14,7 @@ namespace UnderwaterOptimization
         private const string ProfileFolder = "Assets/Settings";
         private const string ProfilePath = "Assets/Settings/UnderwaterAtmosphereProfile.asset";
 
-        //  亮度总表：想整体变暗 / 变亮，只改这一段，然后点菜单 4 立刻生效。
+        //  Lighting values: adjust this block only, then run menu item 4.
         private const float Exposure = -1.0f;
 
         private static readonly Color HoleColor = new Color(1f, 0.93f, 0.82f);
@@ -31,11 +31,11 @@ namespace UnderwaterOptimization
         private const float WarmIntensity = 140f;
         private const float WarmRange = 13f;
 
-        private static readonly Color AmbientColor = new Color(0.020f, 0.030f, 0.040f); // 环境光往下压，暗部更沉
-        private const float FogDensity = 0.045f;           // 保留（指数模式备用），当前用线性雾
-        private const float FogStart = 3.5f;               // 线性雾：3.5 米外开始起雾
-        private const float FogEnd = 20f;                  // 线性雾：20 米处完全融入雾
-        private static readonly Color FogColor = new Color(0.05f, 0.14f, 0.17f); // 雾色偏青
+        private static readonly Color AmbientColor = new Color(0.020f, 0.030f, 0.040f); // Ambient kept low for deeper shadows
+        private const float FogDensity = 0.045f;           // Kept for exponential fog mode; linear fog is used
+        private const float FogStart = 3.5f;               // Linear fog starts at 3.5 m
+        private const float FogEnd = 20f;                  // Fully fogged at 20 m
+        private static readonly Color FogColor = new Color(0.05f, 0.14f, 0.17f); // Fog tinted teal
 
         private const float BloomIntensity = 0.30f;
         private const float VignetteIntensity = 0.28f;
@@ -48,7 +48,7 @@ namespace UnderwaterOptimization
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -60,7 +60,7 @@ namespace UnderwaterOptimization
                 scene = EditorSceneManager.OpenScene(ScenePath);
             }
 
-            // 让重复运行也保持干净：先清掉上一次生成的物体
+            // Rebuilds stay clean: remove the previous objects first
             DestroyIfExists("Underwater_GlobalVolume");
             DestroyIfExists("Underwater_HoleLight");
             DestroyIfExists("Underwater_FillLight");
@@ -92,14 +92,14 @@ namespace UnderwaterOptimization
             GameObject go = GameObject.Find("Preview_Inside");
             if (go == null)
             {
-                Debug.LogWarning("[Underwater] 没找到 Preview_Inside，请先运行 1. Setup Atmosphere。");
+                Debug.LogWarning("[Underwater] Preview_Inside not found. Run 1. Setup Atmosphere first.");
                 return;
             }
 
             Camera cam = go.GetComponent<Camera>();
             if (cam == null)
             {
-                Debug.LogWarning("[Underwater] Preview_Inside 上没有 Camera 组件。");
+                Debug.LogWarning("[Underwater] Preview_Inside has no Camera component.");
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace UnderwaterOptimization
             GameObject lightGO = GameObject.Find("Underwater_HoleLight");
             if (volumeGO == null || lightGO == null)
             {
-                Debug.LogWarning("[Underwater] 没找到氛围物体，请先运行 1. Setup Atmosphere。");
+                Debug.LogWarning("[Underwater] Atmosphere objects not found. Run 1. Setup Atmosphere first.");
                 return;
             }
 
@@ -186,12 +186,12 @@ namespace UnderwaterOptimization
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
 
-        [MenuItem("Tools/Underwater/4. Re-apply Lighting (不重建)", false, 4)]
+        [MenuItem("Tools/Underwater/4. Re-apply Lighting", false, 4)]
         public static void ReapplyLighting()
         {
             if (EditorApplication.isPlaying)
             {
-                EditorUtility.DisplayDialog("Underwater", "请先退出 Play 模式再运行。", "好");
+                EditorUtility.DisplayDialog("Underwater", "Exit Play mode before running this.", "OK");
                 return;
             }
 
@@ -205,7 +205,7 @@ namespace UnderwaterOptimization
 
             if (GameObject.Find("Underwater_HoleLight") == null)
             {
-                Debug.LogWarning("[Underwater] 场景里还没有氛围灯光，请先运行 1. Setup Atmosphere。");
+                Debug.LogWarning("[Underwater] No atmosphere lights in the scene. Run 1. Setup Atmosphere first.");
                 return;
             }
 
@@ -216,7 +216,7 @@ namespace UnderwaterOptimization
             VolumeProfile profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(ProfilePath);
             if (profile == null)
             {
-                Debug.LogWarning("[Underwater] 找不到 " + ProfilePath + "，请先运行 1. Setup Atmosphere。");
+                Debug.LogWarning("[Underwater] Not found: " + ProfilePath + ". Run 1. Setup Atmosphere first.");
                 return;
             }
 
@@ -354,7 +354,7 @@ namespace UnderwaterOptimization
 
             if (cam == null)
             {
-                Debug.LogWarning("[Underwater] 场景里没有相机，跳过相机设置。");
+                Debug.LogWarning("[Underwater] No camera in the scene, skipping camera setup.");
                 return;
             }
 
@@ -393,7 +393,7 @@ namespace UnderwaterOptimization
 
                 go = new GameObject("Underwater_HoleLight");
                 Undo.RegisterCreatedObjectUndo(go, "Create Hole Light");
-                // 放在天花板下方，避免灯被天花板挡住
+                // Placed under the ceiling so it is not blocked
                 go.transform.position = position + Vector3.down * 0.6f;
                 go.transform.rotation = Quaternion.LookRotation(Vector3.down, Vector3.forward);
                 go.AddComponent<Light>();

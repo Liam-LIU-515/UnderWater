@@ -92,12 +92,12 @@ namespace UnderwaterOptimization
 
         public static string InteractName
         {
-            get { return IsVr ? "扳机" : "E"; }
+            get { return IsVr ? "trigger" : "E"; }
         }
 
         public static string FireName
         {
-            get { return IsVr ? "扳机" : "左键"; }
+            get { return IsVr ? "trigger" : "left click"; }
         }
 
         public static bool InteractDown
